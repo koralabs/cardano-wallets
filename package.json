@@ -1,0 +1,39 @@
+{
+  "name": "@koralabs/cardano-wallet-connector",
+  "version": "1.0.0",
+  "description": "Library for connecting cardano wallets in the browser using CIP-30",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "keywords": [
+    "cardano",
+    "wallet",
+    "connector",
+    "cip30"
+  ],
+  "contributors": [
+    {
+      "name": "BigIrishLion"
+    },
+    {
+      "name": "PapaGoose"
+    }
+  ],
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "ts-jest": "^28.0.4",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "@emurgo/cardano-serialization-lib-asmjs": "^10.2.0",
+    "@emurgo/cardano-serialization-lib-browser": "^10.2.0",
+    "axios": "^0.27.2",
+    "buffer": "^6.0.3"
+  }
+}
