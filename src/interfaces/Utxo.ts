@@ -1,8 +1,12 @@
+export interface Asset {
+    policyId: string;
+    name: string;
+    hex: string;
+}
+
 export interface Utxo {
     txId: string;
     txIndx: number;
     lovelaceAmount: string;
-    policyHex?: string;
-    assetName?: string;
-    assetNameHex?: string;
+    assets: Asset[];
 }

@@ -1,11 +1,12 @@
 import { WalletKey } from '../enums/WalletName';
 import { EnabledWallet, Wallet } from '../interfaces/Wallet';
 import { Buffer } from 'buffer';
-import { Utxo } from '../interfaces/Utxo';
+import { Asset, Utxo } from '../interfaces/Utxo';
 import { Paginate } from '../interfaces/Paginate';
 import { Blockfrost } from '../lib/blockfrost';
 import { WalletError } from '../enums/WalletError';
 import { loadCardanoWasm } from '../lib/serialize';
+// import * as lib from '@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib';
 
 export class CardanoWallets {
     public static _enabledWallet: EnabledWallet;
@@ -214,7 +215,10 @@ export class CardanoWallets {
      */
     public static getChangeAddress = async (): Promise<string> => {
         const changeAddress = await this._enabledWallet.getChangeAddress();
-        return changeAddress;
+
+        const serializationLib = await loadCardanoWasm();
+        const bech32Address = serializationLib.Address.from_bytes(Buffer.from(changeAddress, 'hex')).to_bech32();
+        return bech32Address;
     };
 
     /**
@@ -243,7 +247,7 @@ export class CardanoWallets {
      * @param partialSign boolean
      * @returns
      */
-    public static signTx = async (tx: string, partialSign = false): Promise<unknown> => {
+    public static signTx = async (tx: string, partialSign = false): Promise<any> => {
         const result = await this._enabledWallet.signTx(tx, partialSign);
         return result;
     };
@@ -343,9 +347,7 @@ export class CardanoWallets {
             const lovelaceAmount = output.amount().coin().to_str();
             const multiasset = output.amount().multiasset();
 
-            let assetNameString;
-            let assetNameHex;
-            let policyHex;
+            const allAssets: Asset[] = [];
 
             if (multiasset) {
                 const keys = multiasset.keys();
@@ -354,7 +356,7 @@ export class CardanoWallets {
                 for (let i = 0; i < keysLength; i++) {
                     const policy = keys.get(i);
                     const policyBytes = policy.to_bytes() as unknown as string;
-                    policyHex = Buffer.from(policyBytes, 'utf8').toString('hex');
+                    const policyHex = Buffer.from(policyBytes, 'utf8').toString('hex');
 
                     const assets = multiasset.get(policy);
                     const assetNames = assets.keys();
@@ -363,8 +365,10 @@ export class CardanoWallets {
                     for (let j = 0; j < assetLenth; j++) {
                         const assetName = assetNames.get(j);
                         const assetNameBytes = assetName.name() as unknown as string;
-                        assetNameString = Buffer.from(assetNameBytes, 'utf8').toString();
-                        assetNameHex = Buffer.from(assetNameBytes, 'utf8').toString('hex');
+                        const assetNameString = Buffer.from(assetNameBytes, 'utf8').toString();
+                        const assetNameHex = Buffer.from(assetNameBytes, 'utf8').toString('hex');
+
+                        allAssets.push({ policyId: policyHex, name: assetNameString, hex: assetNameHex });
                     }
                 }
             }
@@ -373,12 +377,103 @@ export class CardanoWallets {
                 txId,
                 txIndx,
                 lovelaceAmount,
-                policyHex,
-                assetNameHex,
-                assetName: assetNameString
+                assets: allAssets
             });
         }
 
         return utxoDetails;
+    }
+
+    public static async buildTransaction(
+        address: string,
+        changeAddress: string,
+        lovelaceAmount: string
+    ): Promise<string> {
+        try {
+            // const serializationLib = lib;
+            const serializationLib = await loadCardanoWasm();
+
+            const protocolParams = {
+                linearFee: {
+                    minFeeA: '44',
+                    minFeeB: '155381'
+                },
+                minUtxo: '34482',
+                poolDeposit: '500000000',
+                keyDeposit: '2000000',
+                maxValSize: 5000,
+                maxTxSize: 16384,
+                priceMem: 0.0577,
+                priceStep: 0.0000721,
+                coinsPerUtxoWord: '34482'
+            };
+
+            const txBuilder = serializationLib.TransactionBuilder.new(
+                serializationLib.TransactionBuilderConfigBuilder.new()
+                    .fee_algo(
+                        serializationLib.LinearFee.new(
+                            serializationLib.BigNum.from_str(protocolParams.linearFee.minFeeA),
+                            serializationLib.BigNum.from_str(protocolParams.linearFee.minFeeB)
+                        )
+                    )
+                    .pool_deposit(serializationLib.BigNum.from_str(protocolParams.poolDeposit))
+                    .key_deposit(serializationLib.BigNum.from_str(protocolParams.keyDeposit))
+                    .coins_per_utxo_word(serializationLib.BigNum.from_str(protocolParams.coinsPerUtxoWord))
+                    .max_value_size(protocolParams.maxValSize)
+                    .max_tx_size(protocolParams.maxTxSize)
+                    .prefer_pure_change(true)
+                    .build()
+            );
+
+            const shelleyOutputAddress = serializationLib.Address.from_bech32(address);
+            const shelleyChangeAddress = serializationLib.Address.from_bech32(changeAddress);
+
+            txBuilder.add_output(
+                serializationLib.TransactionOutput.new(
+                    shelleyOutputAddress,
+                    serializationLib.Value.new(serializationLib.BigNum.from_str(lovelaceAmount))
+                )
+            );
+
+            const rawUtxos = await this.getUtxos();
+            const txUnspentOutputs = rawUtxos.reduce((acc, utxo) => {
+                const fromBytes = serializationLib.TransactionUnspentOutput.from_bytes(Buffer.from(utxo, 'hex'));
+                acc.add(fromBytes);
+                return acc;
+            }, serializationLib.TransactionUnspentOutputs.new());
+
+            txBuilder.add_inputs_from(txUnspentOutputs, 3);
+
+            txBuilder.add_change_if_needed(shelleyChangeAddress);
+
+            const transaction = serializationLib.Transaction.new(
+                txBuilder.build(),
+                serializationLib.TransactionWitnessSet.new()
+            );
+
+            return Buffer.from(transaction.to_bytes()).toString('hex');
+        } catch (error: any) {
+            console.log(error);
+            throw new Error(error);
+        }
+    }
+
+    public static async signAndSubmitTransaction(tx: string): Promise<string> {
+        // const serializationLib = lib;
+        const serializationLib = await loadCardanoWasm();
+        let txVkeyWitnesses = await this.signTx(tx, true);
+
+        txVkeyWitnesses = serializationLib.TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnesses, 'hex'));
+
+        const transactionWitnessSet = serializationLib.TransactionWitnessSet.new();
+        transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
+
+        const txBody = serializationLib.Transaction.from_bytes(Buffer.from(tx, 'hex'));
+
+        const signedTx = serializationLib.Transaction.new(txBody.body(), transactionWitnessSet);
+
+        const signedTxHex = Buffer.from(signedTx.to_bytes()).toString('hex');
+        const submittedTxHash = await this.submitTx(signedTxHex);
+        return submittedTxHash;
     }
 }
