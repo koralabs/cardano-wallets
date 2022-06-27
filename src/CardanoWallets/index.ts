@@ -29,15 +29,32 @@ export class CardanoWallets {
      * @param walletKey string
      */
     private static async _setWallet(walletKey: string) {
-        window.localStorage.setItem(
-            this.localStorageKey,
-            JSON.stringify({
-                name: this.wallet.name,
-                icon: this.wallet.icon,
-                apiVersion: this.wallet.apiVersion,
-                key: walletKey
-            })
-        );
+        const details = this.getWalletDetailsFromStorage();
+        if (!details) {
+            window.localStorage.setItem(
+                this.localStorageKey,
+                JSON.stringify({
+                    name: this.wallet.name,
+                    icon: this.wallet.icon,
+                    apiVersion: this.wallet.apiVersion,
+                    key: walletKey
+                })
+            );
+        }
+    }
+
+    public static setAdditionalWalletData(data: Record<string, string>) {
+        const item = window.localStorage.getItem(this.localStorageKey);
+        if (!item) {
+            throw new Error(`No data saved to local storage. Missing ${this.localStorageKey}`);
+        }
+
+        const jsonItem = JSON.parse(item);
+        const updatedItem = {
+            ...jsonItem,
+            ...data
+        };
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(updatedItem));
     }
 
     /**
@@ -109,13 +126,7 @@ export class CardanoWallets {
         return this.wallet;
     }
 
-    /**
-     *
-     * Gets the wallet from local storage if available. If not, method will return null
-     *
-     * @returns an enabled wallet or null
-     */
-    public static async getWallet() {
+    public static getWalletDetailsFromStorage() {
         const wallet = window.localStorage.getItem(this.localStorageKey);
         if (!wallet) {
             return null;
@@ -126,7 +137,7 @@ export class CardanoWallets {
             return null;
         }
 
-        return await this.connect(walletDetails.key);
+        return walletDetails;
     }
 
     public static disableWallet = async (): Promise<void> => {
@@ -390,7 +401,7 @@ export class CardanoWallets {
         lovelaceAmount: string
     ): Promise<string> {
         try {
-            // const serializationLib = lib;
+            //const serializationLib = lib;
             const serializationLib = await loadCardanoWasm();
 
             const protocolParams = {
@@ -442,7 +453,7 @@ export class CardanoWallets {
                 return acc;
             }, serializationLib.TransactionUnspentOutputs.new());
 
-            txBuilder.add_inputs_from(txUnspentOutputs, 3);
+            txBuilder.add_inputs_from(txUnspentOutputs, 0);
 
             txBuilder.add_change_if_needed(shelleyChangeAddress);
 
