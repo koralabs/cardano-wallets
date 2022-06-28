@@ -4,6 +4,7 @@
   "description": "Library for connecting cardano wallets in the browser using CIP-30",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "url": "https://github.com/koralabs/cardano-wallets",
   "keywords": [
     "cardano",
     "wallet",
@@ -35,5 +36,9 @@
     "@emurgo/cardano-serialization-lib-browser": "^10.2.0",
     "axios": "^0.27.2",
     "buffer": "^6.0.3"
-  }
+  },
+  "files": [
+    "bin",
+    "lib"
+  ]
 }
