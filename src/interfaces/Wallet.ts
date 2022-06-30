@@ -12,7 +12,7 @@ export interface Wallet {
 export interface EnabledWallet {
     wallet: Wallet;
     getBalance: () => Promise<string>;
-    getNetworkId: () => Promise<string>;
+    getNetworkId: () => Promise<number>;
     getUtxos: (amount?: string, paginate?: Paginate) => Promise<string[]>;
     getCollateral: () => Promise<string[]>;
     getUnusedAddresses: () => Promise<string[]>;

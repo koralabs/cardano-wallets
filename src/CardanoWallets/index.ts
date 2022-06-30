@@ -176,7 +176,7 @@ export class CardanoWallets {
      *
      * @returns 0 or 1 (0 = testnet, 1 = mainnet)
      */
-    public static getNetworkId = async (): Promise<string> => {
+    public static getNetworkId = async (): Promise<number> => {
         const networkId = await this._enabledWallet.getNetworkId();
         return networkId;
     };
@@ -291,7 +291,7 @@ export class CardanoWallets {
      */
     public static isMainnet = async (): Promise<boolean> => {
         const networkId = await this._enabledWallet.getNetworkId();
-        return networkId === '1';
+        return networkId === 1;
     };
 
     /**
