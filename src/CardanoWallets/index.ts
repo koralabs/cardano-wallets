@@ -289,10 +289,24 @@ export class CardanoWallets {
      *
      * @returns boolean
      */
-    public static isMainnet = async (): Promise<boolean> => {
+    public static async isMainnet(): Promise<boolean> {
         const networkId = await this._enabledWallet.getNetworkId();
         return networkId === 1;
-    };
+    }
+
+    /**
+     *
+     * Fetches the wallet balance and converts it to ADA
+     *
+     * @returns number
+     */
+    public static async getAdaBalance(): Promise<number> {
+        const balanceHex = await this.getBalance();
+
+        const serializationLib = await loadCardanoWasm();
+        const balance = serializationLib.Value.from_bytes(Buffer.from(balanceHex, 'hex')).coin().to_str();
+        return parseInt(balance) / 1000000;
+    }
 
     /**
      *
@@ -300,19 +314,17 @@ export class CardanoWallets {
      *
      * @param minimumBalance number
      */
-    public static verifyBalance = async (minimumBalance: number): Promise<void> => {
+    public static async verifyBalance(minimumBalance: number): Promise<void> {
         if (minimumBalance <= 0) {
             throw new Error(WalletError.MinimumBalanceIsZero);
         }
 
-        const balanceHex = (await this.getBalance()) as string;
+        const adaBalance = await this.getAdaBalance();
 
-        const serializationLib = await loadCardanoWasm();
-        const balance = serializationLib.Value.from_bytes(Buffer.from(balanceHex, 'hex')).coin().to_str();
-        if (parseInt(balance) / 1000000 <= minimumBalance) {
+        if (adaBalance <= minimumBalance) {
             throw new Error(WalletError.InsufficientBalance);
         }
-    };
+    }
 
     /**
      *
@@ -334,6 +346,24 @@ export class CardanoWallets {
         if (!currentRegistration) {
             throw new Error(WalletError.NotDelegated);
         }
+    }
+
+    /**
+     *
+     * Gets bech32 addresses from UTxOs
+     *
+     * @returns string[]
+     */
+    public static async getUtxoBech32Addresses(): Promise<string[]> {
+        const serializationLib = await loadCardanoWasm();
+        const rawUtxos = await this.getUtxos();
+        const bech32Address = rawUtxos.map((rawUtxo) => {
+            const utxo = serializationLib.TransactionUnspentOutput.from_bytes(Buffer.from(rawUtxo, 'hex'));
+            const output = utxo.output();
+            return output.address().to_bech32();
+        });
+
+        return bech32Address;
     }
 
     /**
