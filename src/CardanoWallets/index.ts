@@ -6,6 +6,7 @@ import { Paginate } from '../interfaces/Paginate';
 import { Blockfrost } from '../lib/blockfrost';
 import { WalletError } from '../enums/WalletError';
 import { loadCardanoWasm } from '../lib/serialize';
+import { BuildTransactionInput } from '../interfaces/BuildTransactionInput';
 // import * as lib from '@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib';
 
 export class CardanoWallets {
@@ -425,11 +426,7 @@ export class CardanoWallets {
         return utxoDetails;
     }
 
-    public static async buildTransaction(
-        address: string,
-        changeAddress: string,
-        lovelaceAmount: string
-    ): Promise<string> {
+    public static async buildTransaction({ paymentDetails, feeDetails }: BuildTransactionInput): Promise<string> {
         try {
             //const serializationLib = lib;
             const serializationLib = await loadCardanoWasm();
@@ -466,8 +463,8 @@ export class CardanoWallets {
                     .build()
             );
 
+            const { address, lovelaceAmount, changeAddress } = paymentDetails;
             const shelleyOutputAddress = serializationLib.Address.from_bech32(address);
-            const shelleyChangeAddress = serializationLib.Address.from_bech32(changeAddress);
 
             txBuilder.add_output(
                 serializationLib.TransactionOutput.new(
@@ -475,6 +472,16 @@ export class CardanoWallets {
                     serializationLib.Value.new(serializationLib.BigNum.from_str(lovelaceAmount))
                 )
             );
+
+            if (feeDetails) {
+                const feeOutputAddress = serializationLib.Address.from_bech32(feeDetails.address);
+                txBuilder.add_output(
+                    serializationLib.TransactionOutput.new(
+                        feeOutputAddress,
+                        serializationLib.Value.new(serializationLib.BigNum.from_str(feeDetails.lovelaceAmount))
+                    )
+                );
+            }
 
             const rawUtxos = await this.getUtxos();
             const txUnspentOutputs = rawUtxos.reduce((acc, utxo) => {
@@ -485,6 +492,7 @@ export class CardanoWallets {
 
             txBuilder.add_inputs_from(txUnspentOutputs, 0);
 
+            const shelleyChangeAddress = serializationLib.Address.from_bech32(changeAddress);
             txBuilder.add_change_if_needed(shelleyChangeAddress);
 
             const transaction = serializationLib.Transaction.new(
