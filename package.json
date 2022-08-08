@@ -1,10 +1,14 @@
 {
   "name": "@koralabs/cardano-wallets",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Library for connecting cardano wallets in the browser using CIP-30",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "url": "https://github.com/koralabs/cardano-wallets",
+  "homepage": "https://github.com/koralabs/cardano-wallets",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koralabs/cardano-wallets.git"
+  },
   "keywords": [
     "cardano",
     "wallet",
