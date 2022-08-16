@@ -2,5 +2,7 @@ export enum WalletKey {
     Nami = 'nami',
     Eternl = 'eternl',
     Flint = 'flint',
-    GeroWallet = 'gerowallet'
+    GeroWallet = 'gerowallet',
+    Yoroi = 'yoroi',
+    NuFi = 'nufi'
 }

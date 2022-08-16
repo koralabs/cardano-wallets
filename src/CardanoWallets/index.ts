@@ -18,7 +18,9 @@ export class CardanoWallets {
         WalletKey.Nami,
         WalletKey.Eternl,
         WalletKey.GeroWallet,
-        WalletKey.Flint
+        WalletKey.Flint,
+        WalletKey.Yoroi,
+        WalletKey.NuFi
     ];
 
     // Private methods
