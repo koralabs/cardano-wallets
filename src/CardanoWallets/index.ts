@@ -1,4 +1,4 @@
-import { WalletKey } from '../enums/WalletName';
+import { WalletKey } from '../enums/WalletKey';
 import { EnabledWallet, Wallet } from '../interfaces/Wallet';
 import { Buffer } from 'buffer';
 import { Asset, Utxo } from '../interfaces/Utxo';
@@ -20,7 +20,8 @@ export class CardanoWallets {
         WalletKey.GeroWallet,
         WalletKey.Flint,
         WalletKey.Yoroi,
-        WalletKey.NuFi
+        WalletKey.NuFi,
+        WalletKey.Typhon
     ];
 
     // Private methods
