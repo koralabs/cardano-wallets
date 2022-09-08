@@ -528,4 +528,20 @@ export class CardanoWallets {
         const submittedTxHash = await this.submitTx(signedTxHex);
         return submittedTxHash;
     }
+
+    public static async submitTransaction(tx: string, txWitness: string): Promise<string> {
+        const serializationLib = await loadCardanoWasm();
+        const txVkeyWitnesses = serializationLib.TransactionWitnessSet.from_bytes(Buffer.from(txWitness, 'hex'));
+
+        const transactionWitnessSet = serializationLib.TransactionWitnessSet.new();
+        transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
+
+        const txBody = serializationLib.Transaction.from_bytes(Buffer.from(tx, 'hex'));
+
+        const signedTx = serializationLib.Transaction.new(txBody.body(), transactionWitnessSet);
+
+        const signedTxHex = Buffer.from(signedTx.to_bytes()).toString('hex');
+        const submittedTxHash = await this.submitTx(signedTxHex);
+        return submittedTxHash;
+    }
 }
