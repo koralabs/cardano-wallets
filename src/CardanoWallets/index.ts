@@ -429,7 +429,10 @@ export class CardanoWallets {
         return utxoDetails;
     }
 
-    public static async buildTransaction({ paymentDetails, feeDetails }: BuildTransactionInput): Promise<string> {
+    public static async buildTransaction({
+        paymentDetails,
+        feeDetails
+    }: BuildTransactionInput): Promise<{ txHash: string; tx: string }> {
         try {
             //const serializationLib = lib;
             const serializationLib = await loadCardanoWasm();
@@ -498,20 +501,25 @@ export class CardanoWallets {
             const shelleyChangeAddress = serializationLib.Address.from_bech32(changeAddress);
             txBuilder.add_change_if_needed(shelleyChangeAddress);
 
+            const builtTransaction = txBuilder.build();
+            const txHash = Buffer.from(serializationLib.hash_transaction(builtTransaction).to_bytes()).toString('hex');
+
             const transaction = serializationLib.Transaction.new(
-                txBuilder.build(),
+                builtTransaction,
                 serializationLib.TransactionWitnessSet.new()
             );
 
-            return Buffer.from(transaction.to_bytes()).toString('hex');
+            return {
+                txHash,
+                tx: Buffer.from(transaction.to_bytes()).toString('hex')
+            };
         } catch (error: any) {
             console.log(error);
             throw new Error(error);
         }
     }
 
-    public static async signAndSubmitTransaction(tx: string): Promise<string> {
-        // const serializationLib = lib;
+    public static async signTransaction(tx: string): Promise<string> {
         const serializationLib = await loadCardanoWasm();
         let txVkeyWitnesses = await this.signTx(tx, true);
 
@@ -525,22 +533,16 @@ export class CardanoWallets {
         const signedTx = serializationLib.Transaction.new(txBody.body(), transactionWitnessSet);
 
         const signedTxHex = Buffer.from(signedTx.to_bytes()).toString('hex');
+        return signedTxHex;
+    }
+
+    public static async submitSignedTransaction(signedTxHex: string): Promise<string> {
         const submittedTxHash = await this.submitTx(signedTxHex);
         return submittedTxHash;
     }
 
-    public static async submitTransaction(tx: string, txWitness: string): Promise<string> {
-        const serializationLib = await loadCardanoWasm();
-        const txVkeyWitnesses = serializationLib.TransactionWitnessSet.from_bytes(Buffer.from(txWitness, 'hex'));
-
-        const transactionWitnessSet = serializationLib.TransactionWitnessSet.new();
-        transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
-
-        const txBody = serializationLib.Transaction.from_bytes(Buffer.from(tx, 'hex'));
-
-        const signedTx = serializationLib.Transaction.new(txBody.body(), transactionWitnessSet);
-
-        const signedTxHex = Buffer.from(signedTx.to_bytes()).toString('hex');
+    public static async signAndSubmitTransaction(tx: string): Promise<string> {
+        const signedTxHex = await this.signTransaction(tx);
         const submittedTxHash = await this.submitTx(signedTxHex);
         return submittedTxHash;
     }
