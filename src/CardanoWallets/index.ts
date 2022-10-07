@@ -21,7 +21,8 @@ export class CardanoWallets {
         WalletKey.Flint,
         WalletKey.Yoroi,
         WalletKey.NuFi,
-        WalletKey.Typhon
+        WalletKey.Typhon,
+        WalletKey.Begin
     ];
 
     // Private methods

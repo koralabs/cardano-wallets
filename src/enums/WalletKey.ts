@@ -5,5 +5,6 @@ export enum WalletKey {
     GeroWallet = 'gerowallet',
     Yoroi = 'yoroi',
     NuFi = 'nufi',
-    Typhon = 'typhoncip30'
+    Typhon = 'typhoncip30',
+    Begin = 'begin'
 }
