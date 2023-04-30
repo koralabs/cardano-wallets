@@ -14,16 +14,7 @@ export class CardanoWallets {
     public static wallet: Wallet;
     public static localStorageKey = 'cardanoWallet';
 
-    public static supportedWalletNames: string[] = [
-        WalletKey.Nami,
-        WalletKey.Eternl,
-        WalletKey.GeroWallet,
-        WalletKey.Flint,
-        WalletKey.Yoroi,
-        WalletKey.NuFi,
-        WalletKey.Typhon,
-        WalletKey.Begin
-    ];
+    public static supportedWalletNames: string[] = [];
 
     // Private methods
 
@@ -46,6 +37,18 @@ export class CardanoWallets {
                 })
             );
         }
+    }
+
+    /**
+     *
+     * Helper function to add supported wallets.
+     * If none are added, all wallets are supported
+     *
+     * @param wallets string[], e.g. ['nami', 'eternal'] (window.cardano[key])
+     *
+     */
+    public static addSupportedWallets(wallets: string[]) {
+        this.supportedWalletNames = [...this.supportedWalletNames, ...wallets];
     }
 
     public static setAdditionalWalletData(data: Record<string, string>) {
@@ -118,7 +121,7 @@ export class CardanoWallets {
      * @returns an enabled wallet
      */
     public static async connect(walletKey: string): Promise<Wallet> {
-        this.validateSupportedWallet(walletKey);
+        if (this.supportedWalletNames.length > 0) this.validateSupportedWallet(walletKey);
         this.validateWallet(walletKey);
 
         const wallet = window.cardano[walletKey];
