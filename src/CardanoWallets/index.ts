@@ -408,16 +408,18 @@ export class CardanoWallets {
                     const policyHex = Buffer.from(policyBytes, 'utf8').toString('hex');
 
                     const assets = multiasset.get(policy);
-                    const assetNames = assets.keys();
-                    const assetLenth = assetNames.len();
+                    const assetNames = assets?.keys();
+                    if (assetNames) {
+                        const assetLenth = assetNames.len();
 
-                    for (let j = 0; j < assetLenth; j++) {
-                        const assetName = assetNames.get(j);
-                        const assetNameBytes = assetName.name() as unknown as string;
-                        const assetNameString = Buffer.from(assetNameBytes, 'utf8').toString();
-                        const assetNameHex = Buffer.from(assetNameBytes, 'utf8').toString('hex');
+                        for (let j = 0; j < assetLenth; j++) {
+                            const assetName = assetNames.get(j);
+                            const assetNameBytes = assetName.name() as unknown as string;
+                            const assetNameString = Buffer.from(assetNameBytes, 'utf8').toString();
+                            const assetNameHex = Buffer.from(assetNameBytes, 'utf8').toString('hex');
 
-                        allAssets.push({ policyId: policyHex, name: assetNameString, hex: assetNameHex });
+                            allAssets.push({ policyId: policyHex, name: assetNameString, hex: assetNameHex });
+                        }
                     }
                 }
             }

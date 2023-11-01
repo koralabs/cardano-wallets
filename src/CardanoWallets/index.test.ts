@@ -41,7 +41,8 @@ describe('CardanoWallets Tests', () => {
             global.window = {
                 // @ts-ignore
                 localStorage: {
-                    setItem: jest.fn()
+                    setItem: jest.fn(),
+                    getItem: jest.fn()
                 },
                 cardano: {
                     nami: {

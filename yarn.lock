@@ -284,10 +284,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@emurgo/cardano-serialization-lib-asmjs@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-asmjs/-/cardano-serialization-lib-asmjs-10.2.0.tgz#460b7dee0a1e6e365a598c31d30cf8226684e76a"
-  integrity sha512-AHUGIQ4RBaaQiaz8+NeN7yEtu8PgKtIKp5j1cIivRFjyA0kKTxmDkrMuTBpMZqhADWrvUf6cnKw5Tzwqzg26MQ==
+"@emurgo/cardano-serialization-lib-asmjs@11.5.0":
+  version "11.5.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-asmjs/-/cardano-serialization-lib-asmjs-11.5.0.tgz#0c71fc8fedce8ae8304180d40dfb5ca76f76e8f0"
+  integrity sha512-QQkavjEug/EmBFg02bmSg0eLYiOaRa1lmRG8q6fGRkx3O9BX1iZQDZJmirPDBTkTO3CpNB0q9se8DQFFcjREIw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
