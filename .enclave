@@ -1,0 +1,9 @@
+# cardano-wallets enclave manifest (proposal, ecosystem-ownership-plan row 5.3).
+#
+# Changes to these paths merging into master need operator approval
+# (K.O.R.A.'s merge_pr cards them). Everything else merges freely.
+# Format: one path per line; trailing "/" = directory prefix. "#" = comment.
+# Why each entry is here: CANONICAL_CONTRACT.md. This file is enclaved itself.
+
+.enclave
+CANONICAL_CONTRACT.md
