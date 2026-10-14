@@ -1,6 +1,6 @@
 # Registry integration specification
 
-The public entry point exports `WalletKey`; its Exodus member maps to the literal `exodus`. The existing connector validates configured supported keys, resolves the injected `window.cardano[key]`, awaits `enable`, stores metadata in `cardanoWallet` and delegates read-only methods to the enabled API.
+The public entry point exports `WalletKey`; its Exodus member maps to the literal `exodus`. The existing connector validates configured supported keys, resolves the injected `window.cardano[key]`, awaits `enable`, stores metadata in `cardanoWallet` when no existing stored choice is present, and delegates read-only methods to the enabled API.
 
 Preserve master0.4.0 semantics: default empty supported-key list, configurable `addSupportedWallets`, BeginNightly, installed dependency declarations/lockfile, publish script and current UTxO guards. Do not reintroduce the old PR's fixed whitelist or roll back unrelated changes. The runtime connector, transaction paths and provider-specific namespaces are unchanged.
 

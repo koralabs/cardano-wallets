@@ -7,7 +7,7 @@ Expose `WalletKey.Exodus = 'exodus'` through the existing public enum so consume
 - The caller/browser extension provides `window.cardano[key]`.
 - Empty supported-wallet configuration accepts any injected key.
 - `addSupportedWallets` explicitly restricts keys when configured.
-- Successful connection stores the selected provider's metadata and enables read-only API use.
+- Successful connection enables read-only API use and stores provider metadata when no existing stored choice is present, preserving the current connector's storage behavior.
 - Missing providers and declined connection fail without saving a new choice.
 - Existing enum entries, including BeginNightly, remain available.
 
