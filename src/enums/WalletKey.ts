@@ -7,5 +7,6 @@ export enum WalletKey {
     NuFi = 'nufi',
     Typhon = 'typhoncip30',
     Begin = 'begin',
-    BeginNightly = 'begin-nightly'
+    BeginNightly = 'begin-nightly',
+    Exodus = 'exodus'
 }
