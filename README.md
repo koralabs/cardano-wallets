@@ -62,3 +62,7 @@ const assets = builtUtxos.reduce<{
         return agg;
     }, []);
 ```
+
+## Maintenance review documentation
+
+See the [documentation index](docs/index.md) and [review-only maintenance preparation](docs/maintenance-review.md). No publication or consumer migration is authorized.
