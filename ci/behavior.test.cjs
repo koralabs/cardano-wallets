@@ -29,9 +29,9 @@ function provider(api = {}) {
     removeItem: key => storage.delete(key)
   }, cardano: { nami: { name: 'Nami', icon: 'fixture.svg', apiVersion: '1.0.0', enable: async () => api } } };
 }
-function cbor(withAsset) {
+function cbor(withAsset, lovelace = '1234567') {
   const address = CSL.Address.from_bytes(Buffer.from('60' + '22'.repeat(28), 'hex'));
-  const value = CSL.Value.new(CSL.BigNum.from_str('1234567'));
+  const value = CSL.Value.new(CSL.BigNum.from_str(lovelace));
   if (withAsset) {
     const entries = CSL.Assets.new();
     entries.insert(CSL.AssetName.new(Buffer.from('fixture')), CSL.BigNum.from_str('7'));
@@ -88,6 +88,11 @@ test('network identification preserves mainnet and testnet values', async () => 
 });
 for (const withAsset of [false,true]) test(`real CSL10 UTxO decoding, native assets=${withAsset}`, async () => {
   assert.deepEqual(await Wallets.buildUtxos([cbor(withAsset)]), [{txId:'11'.repeat(32),txIndx:3,lovelaceAmount:'1234567',assets:withAsset?[{policyId:'33'.repeat(28),name:'fixture',hex:'66697874757265'}]:[]}]);
+});
+test('large lovelace remains an exact decimal string beyond Number precision', async () => {
+  const [utxo] = await Wallets.buildUtxos([cbor(false, '9007199254740993')]);
+  assert.equal(utxo.lovelaceAmount,'9007199254740993');
+  assert.deepEqual(utxo.assets,[]);
 });
 test('empty UTxOs stay empty', async () => { assert.deepEqual(await Wallets.buildUtxos([]), []); });
 test('invalid JavaScript null input rejects', async () => { await assert.rejects(Wallets.buildUtxos(null), TypeError); });
