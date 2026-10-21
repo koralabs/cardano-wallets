@@ -24,6 +24,14 @@ The build emits an old .test.js/.test.d.ts under lib. The first actual preparati
 
 The preparation typechecks a targeted import-and-call boundary against the actual extracted packed declarations, using admin's inventoried CardanoWallets/Asset/Utxo/Wallet surface. It is NOT a handwritten public API stub, full admin TSX compilation, native admin test acceptance or migration. The actual packed JavaScript independently runs the same behavior tests. Existing admin owner retains all integration work and the private signing boundary is never invoked. Full consumer compilation/tests await separately approved immutable publication and explicit migration authorization.
 
+## Independent preparation review qualifications
+
+The independent review of head `b4c137d8d9b471495885dda5d25fd2a12e8a71bb` verified exact native preparation run 39538774496, archive integrity/source gitHead, entire original yarn.lock bytes, JS/declaration layout and absence of tests/links/duplicate paths. This is preparation proof only, not publication or migration authorization. Any later documentation head is a new exact review identity, not covered by that head's approval or archive receipt.
+
+Actual admin WalletContext has an existing @ts-ignore before `_enabledWallet.signData`; both original and packed EnabledWallet declarations lack signData. The independent type-only probe against packed declarations produces TS2339 without invoking signing. This pre-existing ignored declaration mismatch is not a new migration blocker, but our non-signing declaration checks do NOT prove private signer compatibility. No type/runtime/API/signing change is proposed or authorized.
+
+The wrong-head check runs before preparation-script artifact writes. It does NOT run before the workflow's source build/tests: those steps precede the preparation guard. The local wrong-head negative control must not be represented as a workflow pre-build guard. In-memory CSL interop and the limited targeted consumer declaration boundary retain their stated qualifications above.
+
 ## Future publication review requirements — not executable here
 
 Publication remains unauthorized. A future exact-head reviewed publisher would need verified package ownership/destination, collision-free immutable identity, exact tested archive publication with explicit maintenance tag, tag capture independent of missing old versions/tags, unchanged latest (including truly absent latest), registry gitHead/compiler graph/integrity and downloaded byte equality. No claim that private/deleted old archive is globally nonexistent, or that built-in repository token already has package creation authority. No scope escalation. No consumer gap closes from this draft.
