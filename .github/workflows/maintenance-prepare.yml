@@ -24,10 +24,8 @@ jobs:
           node-version: '20'
       - name: Install original frozen graph
         run: npx --yes yarn@1.22.22 install --frozen-lockfile
-      - name: Build actual original source and declarations
-        run: npm run build
-      - name: Run real source behavior and error cases
-        run: node --test ci/behavior.test.cjs
+      - name: Exercise default test command — build original source and real behavior cases
+        run: npm test
       - name: Prepare tested artifact, never publish
         env:
           EXPECTED_HEAD: ${{ inputs.expected_head || github.sha }}

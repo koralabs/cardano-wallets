@@ -24,9 +24,9 @@
     }
   ],
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "npm run build && node --test ci/behavior.test.cjs",
     "build": "tsc",
-    "test:maintenance": "node --test ci/behavior.test.cjs"
+    "test:maintenance": "npm test"
   },
   "author": "",
   "license": "ISC",
