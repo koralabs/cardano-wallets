@@ -1,0 +1,41 @@
+name: Wallet maintenance preparation only
+on:
+  push:
+    branches: ['review/wallet-0.2.13-*']
+  workflow_dispatch:
+    inputs:
+      expected_head:
+        description: Exact reviewed source head to prepare, never publish
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  prepare:
+    name: Original CSL10 source and packed compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install original frozen graph
+        run: npx --yes yarn@1.22.22 install --frozen-lockfile
+      - name: Build actual original source and declarations
+        run: npm run build
+      - name: Run real source behavior and error cases
+        run: node --test ci/behavior.test.cjs
+      - name: Prepare tested artifact, never publish
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head || github.sha }}
+          NPM_CONFIG_TAG: maintenance
+        run: node ci/prepare.cjs
+      - name: Exercise actual packed JavaScript
+        run: WALLET_PACKAGE="$PWD/tmp/packed/package/lib/index.js" node --test ci/behavior.test.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wallet-maintenance-review-only
+          path: tmp/prepared/
