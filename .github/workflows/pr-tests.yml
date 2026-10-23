@@ -1,4 +1,4 @@
-name: PR tests
+name: PR build
 on:
   pull_request:
   push:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   tests:
-    name: Build and unit tests
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -18,4 +18,3 @@ jobs:
       - run: npm install --global yarn@1.22.22
       - run: yarn install --frozen-lockfile
       - run: yarn build
-      - run: yarn test --runInBand

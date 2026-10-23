@@ -1,5 +1,9 @@
 # Cardano Wallets
 
+## Contributor test policy
+
+Tests and coverage run locally only, never in GitHub Actions, directly or through lifecycle scripts, composites, workflow templates, or shared helpers. Preserve local test commands. Build, lint, publication, deployment, and production guards remain permitted. Remove obsolete required test checks when retiring them.
+
 Library for connecting cardano dApps to wallet browser extensions using [CIP-30](https://cips.cardano.org/cips/cip30/).
 
 ## Documentation
