@@ -1,0 +1,11 @@
+# cardano-wallets: exact repo-root-relative paths, one per line. These files talk to the user's wallet and decode wallet data.
+.enclave
+CANONICAL_CONTRACT.md
+src/CardanoWallets/index.ts
+src/lib/serialize/index.ts
+src/lib/blockfrost/index.ts
+src/lib/blockfrost/lib/consts.ts
+src/enums/WalletKey.ts
+src/enums/WalletError.ts
+package.json
+yarn.lock
