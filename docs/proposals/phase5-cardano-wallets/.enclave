@@ -1,9 +1,0 @@
-# cardano-wallets enclave manifest - DRAFT (ecosystem-ownership-plan Phase 5, row 5.3). NOT ACTIVE.
-# merge_pr reads only a root .enclave (or v3/.enclave); this copy under docs/proposals/phase5-cardano-wallets/ is inert.
-# Adoption = the operator moves it to the repo root. Paths are repo-root-relative.
-# Once adopted, changes to these paths merging into master need operator approval.
-# Format: one path per line; trailing "/" = directory prefix; "#" = comment.
-# Why each entry is here: CANONICAL_CONTRACT.md. This file is enclaved itself.
-
-.enclave
-CANONICAL_CONTRACT.md
