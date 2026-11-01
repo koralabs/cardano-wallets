@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1793513034797" clover="3.2.0">
+  <project timestamp="1793513034797" name="All files">
+    <metrics statements="14" coveredstatements="14" conditionals="8" coveredconditionals="6" methods="4" coveredmethods="4" elements="26" coveredelements="24" complexity="0" loc="14" ncloc="14" packages="3" files="3" classes="3"/>
+    <package name="enums">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="WalletError.ts" path="/tmp/float-cw/src/enums/WalletError.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="lib.blockfrost">
+      <metrics statements="12" coveredstatements="12" conditionals="8" coveredconditionals="6" methods="4" coveredmethods="4"/>
+      <file name="index.ts" path="/tmp/float-cw/src/lib/blockfrost/index.ts">
+        <metrics statements="12" coveredstatements="12" conditionals="8" coveredconditionals="6" methods="4" coveredmethods="4"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="9" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="lib.blockfrost.lib">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="consts.ts" path="/tmp/float-cw/src/lib/blockfrost/lib/consts.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
