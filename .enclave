@@ -8,4 +8,4 @@ src/lib/blockfrost/lib/consts.ts
 src/enums/WalletKey.ts
 src/enums/WalletError.ts
 package.json
-yarn.lock
+package-lock.json
